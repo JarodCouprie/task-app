@@ -1,70 +1,78 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
+import {ThemedText} from '@/components/ThemedText';
+import {ThemedView} from '@/components/ThemedView';
+import TaskCard from "@/components/TaskCard";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
+import {useEffect, useState} from "react";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export type Task = {
+    id: number,
+    title: string,
+    date: Date,
+}
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Bienvenue sur mon application de tâches</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+    const insets = useSafeAreaInsets();
+    const [tasks, setTasks] = useState<Task[]>([])
+
+    const newTasks: Task[] = [
+        {id: 0, title: "Tâche 1", date: new Date()},
+        {id: 1, title: "Tâche 2", date: new Date()},
+        {id: 2, title: "Tâche 3", date: new Date()},
+        {id: 3, title: "Tâche 4", date: new Date()},
+        {id: 4, title: "Tâche 5", date: new Date()},
+    ]
+
+    useEffect(() => {
+        setTasks(newTasks);
+    }, []);
+
+    const deleteTask = (id: number) => {
+        setTasks(
+            tasks.filter(task => task.id !== id)
+        )
+    }
+
+    const updateTask = (id: number, title: string) => {
+        const tempTasks = [...tasks];
+        tempTasks.map((task) => {
+            if (task.id === id) {
+                task.title = title;
+            }
+        });
+        setTasks(
+            tempTasks
+        )
+    }
+
+
+    return (
+        <View style={{
+            ...styles.view,
+            marginBottom: insets.bottom,
+            marginTop: insets.top,
+            marginLeft: insets.left,
+            marginRight: insets.right,
+        }}>
+            <ThemedText type="title">Bienvenue !</ThemedText>
+            <ThemedView>
+                <FlatList data={tasks} renderItem={({item}) =>
+                    <TaskCard date={item.date} title={item.title} deleteTask={deleteTask} updateTask={updateTask}
+                              id={item.id}/>
+                } horizontal={false} keyExtractor={(item) => String(item.id)} contentContainerStyle={styles.list}/>
+            </ThemedView>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+    view: {
+        display: "flex",
+        gap: 8,
+        padding: 8,
+    },
+    list: {
+        display: "flex",
+        gap: 8
+    }
 });

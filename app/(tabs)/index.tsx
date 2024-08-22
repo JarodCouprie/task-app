@@ -109,5 +109,5 @@ const styles = StyleSheet.create({
         display: "flex",
         gap: 4
     },
-    image: {width: "100%", height: "100%", position: "absolute", top: 0, left: 0}
+    image: {width: "100%", height: "100%", position: "absolute", top: 0, left: 0, opacity: 0.3}
 });

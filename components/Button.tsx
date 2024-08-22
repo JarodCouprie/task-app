@@ -1,7 +1,8 @@
 import {DimensionValue, Pressable, StyleSheet, Text} from "react-native";
 import {useColorScheme} from "@/hooks/useColorScheme";
-import {primary} from "@/constants/Colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import {ThemedText} from "@/components/ThemedText";
+import {Colors} from "@/constants/Colors";
 
 type ButtonProps = {
     press: () => void,
@@ -25,10 +26,14 @@ export default function Button({
 
     const colorScheme = useColorScheme();
 
+    if (!color) {
+        color = colorScheme === "light" ? Colors.light.text : Colors.dark.text;
+    }
+
     return <Pressable style={{...styles.button, width, backgroundColor}}
                       onPress={press}>
         {type !== "text-only" && (<Ionicons name={icon} style={{color}}/>)}
-        {type !== "icon-only" && (<Text style={{color}}>{title}</Text>)}
+        {type !== "icon-only" && (<ThemedText style={{color, fontSize: 16, fontWeight:"bold"}}>{title}</ThemedText>)}
     </Pressable>
 }
 

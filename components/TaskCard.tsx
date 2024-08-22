@@ -1,5 +1,14 @@
 import {useColorScheme} from "@/hooks/useColorScheme";
-import {Animated, Dimensions, Keyboard, StyleSheet, TextInput, TouchableWithoutFeedback, View} from "react-native";
+import {
+    Animated,
+    Dimensions,
+    Keyboard,
+    Pressable,
+    StyleSheet,
+    TextInput,
+    TouchableWithoutFeedback,
+    View
+} from "react-native";
 import {ThemedText} from "@/components/ThemedText";
 import Button from "@/components/Button";
 import React, {useEffect, useRef, useState} from "react";
@@ -32,8 +41,18 @@ export default function TaskCard({id, title, date, deleteTask, updateTask}: Task
         setUpdating(!updating);
     }
 
-    return <View
-        style={{...styles.card, backgroundColor: theme === "light" ? "#e2e8f0" : "#0f172a"}}>
+    const handleShowMenu = () => {
+        if (!updating) {
+            setShowMenu(!showMenu);
+        }
+    }
+
+    const handleCancel = () => {
+        setUpdating(!updating);
+    }
+
+    return <Pressable onPress={handleShowMenu}
+                      style={{...styles.card, backgroundColor: theme === "light" ? "#f8fafc" : "#374151"}}>
         {updating ?
             <TextInput
                 style={{
@@ -48,56 +67,79 @@ export default function TaskCard({id, title, date, deleteTask, updateTask}: Task
                 onChangeText={text => setInputValue(text)}
                 autoFocus={updating}
             /> :
-            <View>
-                <ThemedText type="subtitle">{title}</ThemedText>
-                <ThemedText type="default">{date.toLocaleDateString("fr-FR")}</ThemedText>
+            <View style={styles.cardContainer}>
+                <View>
+                    <ThemedText type="subtitle">{title}</ThemedText>
+                    <ThemedText type="default">Créée le {date.toLocaleDateString("fr-FR")}</ThemedText>
+                </View>
+                <Button type="icon-only" press={() => setShowMenu(!showMenu)} icon="ellipsis-vertical-outline"/>
             </View>
         }
-        {showMenu ? updating ?
-            <View style={styles.container}>
-                <Button type="text-only" title="Annuler" press={() => setUpdating(!updating)}
-                        backgroundColor="#626262"
-                        color="#F5F5F5"/>
-                <Button title="Enregistrer" press={handleSavingInputText} backgroundColor="#3730a3"
-                        color="#F5F5F5"
-                        icon="save-outline"/>
-            </View> :
-            <View style={styles.container}>
-                <Button title="Suprimer" press={() => deleteTask(id)} backgroundColor="#991b1b"
-                        color="#F5F5F5" icon="trash-outline"/>
-                <Button title="Modifier" press={handleTaskUpdate} backgroundColor="#3730a3"
-                        color="#F5F5F5" icon="pencil"/>
-            </View> : <View></View>
-
-        }
-        <Button type="icon-only" press={() => setShowMenu(!showMenu)}
-                color={theme === "light" ? "#000000" : "#F5F5F5"} icon="ellipsis-vertical-outline"/>
-    </View>
+        {showMenu && <View style={styles.container}>
+            {updating ?
+                <>
+                    <Button type="text-only" title="Annuler" press={handleCancel}/>
+                    <Button title="Enregistrer" press={handleSavingInputText}
+                            backgroundColor={theme === "light" ? "blue" : "#0051A2"}
+                            color="#F5F5F5"
+                            icon="save-outline"/>
+                </> :
+                <>
+                    <Button title="Suprimer" press={() => deleteTask(id)}
+                            color="red"/>
+                    <Button title="Modifier" press={handleTaskUpdate}
+                            color={theme === "light" ? "blue" : "#0080FF"}/>
+                </>
+            }
+        </View>}
+    </Pressable>
 }
 
 const styles = StyleSheet.create({
     container: {
+        width: "100%",
         display: "flex",
         flexDirection: "row",
         gap: 4,
+        justifyContent: "space-between",
     },
     card: {
         width: "100%",
-        height: 60,
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "column",
         padding: 8,
         justifyContent: "space-between",
         alignItems: "center",
         borderRadius: 8,
         gap: 4,
-        borderWidth: 1,
-        borderColor: "#94a3b8"
+        shadowColor: "#000000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.16,
+        shadowRadius: 1.51,
+        elevation: 2
+    },
+    cardContainer: {
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: 4,
     },
     input: {
+        width: "100%",
         padding: 10,
         borderWidth: 0.5,
         borderRadius: 4,
         flex: 1
     },
+    menu: {
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-end",
+    }
 })

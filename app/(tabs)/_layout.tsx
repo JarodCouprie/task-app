@@ -13,13 +13,13 @@ export default function TabLayout() {
         <SafeAreaProvider>
             <Tabs
                 screenOptions={{
-                    tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+                    tabBarActiveTintColor: Colors[colorScheme ?? 'light'].text,
                     headerShown: false,
                 }}>
                 <Tabs.Screen
                     name="index"
                     options={{
-                        title: 'Home',
+                        title: 'Tâches',
                         tabBarIcon: ({color, focused}) => (
                             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color}/>
                         ),
@@ -28,9 +28,9 @@ export default function TabLayout() {
                 <Tabs.Screen
                     name="explore"
                     options={{
-                        title: 'Explore',
+                        title: 'Ajouter',
                         tabBarIcon: ({color, focused}) => (
-                            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color}/>
+                            <TabBarIcon name={focused ? 'add-circle' : 'add-circle-outline'} color={color}/>
                         ),
                     }}
                 />

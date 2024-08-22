@@ -4,8 +4,8 @@ import {primary} from "@/constants/Colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 type ButtonProps = {
-    title: string,
     press: () => void,
+    title?: string,
     type?: "default" | "text-only" | 'icon-only',
     backgroundColor?: string,
     color?: string,
@@ -13,7 +13,15 @@ type ButtonProps = {
     icon?: keyof typeof Ionicons.glyphMap,
 }
 
-export default function Button({type = "default", title, width, press, color, backgroundColor = primary, icon}: ButtonProps) {
+export default function Button({
+                                   type = "default",
+                                   title,
+                                   width,
+                                   press,
+                                   color,
+                                   backgroundColor,
+                                   icon
+                               }: ButtonProps) {
 
     const colorScheme = useColorScheme();
 
@@ -32,6 +40,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        gap: 4
+        gap: 4,
     }
 })

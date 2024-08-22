@@ -1,27 +1,15 @@
 import {useColorScheme} from "@/hooks/useColorScheme";
-import {
-    Animated,
-    Dimensions,
-    Keyboard,
-    Pressable,
-    StyleSheet,
-    TextInput,
-    TouchableWithoutFeedback,
-    View
-} from "react-native";
+import {Keyboard, Pressable, StyleSheet, TextInput, View} from "react-native";
 import {ThemedText} from "@/components/ThemedText";
 import Button from "@/components/Button";
-import React, {useEffect, useRef, useState} from "react";
-import GestureHandler from "react-native-gesture-handler/src/web_hammer/GestureHandler";
-import {Directions, Gesture, GestureDetector, GestureHandlerRootView} from "react-native-gesture-handler";
-import {clamp, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
+import React, {useState} from "react";
 
 export type TaskCardProps = {
-    id: number,
+    id: string,
     title: string,
     date: Date,
-    deleteTask: (id: number) => void,
-    updateTask: (id: number, title: string) => void
+    deleteTask: (id: string) => void,
+    updateTask: (id: string, title: string) => void
 }
 
 export default function TaskCard({id, title, date, deleteTask, updateTask}: TaskCardProps) {
@@ -70,9 +58,10 @@ export default function TaskCard({id, title, date, deleteTask, updateTask}: Task
             <View style={styles.cardContainer}>
                 <View>
                     <ThemedText type="subtitle">{title}</ThemedText>
-                    <ThemedText type="default">Créée le {date.toLocaleDateString("fr-FR")}</ThemedText>
+                    <ThemedText type="default">Créée le {new Date(date)?.toLocaleDateString("fr-FR")}</ThemedText>
                 </View>
-                <Button type="icon-only" press={() => setShowMenu(!showMenu)} icon="ellipsis-vertical-outline"/>
+                <Button type="icon-only" press={() => setShowMenu(!showMenu)}
+                        icon={showMenu ? "caret-down-outline" : "ellipsis-vertical-outline"}/>
             </View>
         }
         {showMenu && <View style={styles.container}>
@@ -85,10 +74,9 @@ export default function TaskCard({id, title, date, deleteTask, updateTask}: Task
                             icon="save-outline"/>
                 </> :
                 <>
-                    <Button title="Suprimer" press={() => deleteTask(id)}
-                            color="red"/>
                     <Button title="Modifier" press={handleTaskUpdate}
                             color={theme === "light" ? "blue" : "#0080FF"}/>
+                    <Button title="Suprimer" press={() => deleteTask(id)} color="red"/>
                 </>
             }
         </View>}
